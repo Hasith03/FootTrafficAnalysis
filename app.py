@@ -7,7 +7,7 @@ from snowflake.snowpark.functions import col, parse_json
 from trulens.core import TruSession
 from trulens.connectors.snowflake import SnowflakeConnector
 
-load_dotenv()
+# load_dotenv()
 
 CONNECTION_PARAMETERS = {
     "account": os.getenv("SNOWFLAKE_ACCOUNT"),
