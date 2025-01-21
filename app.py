@@ -1,10 +1,24 @@
 import streamlit as st
 import json
 import re
+from snowflake.snowpark import Session
 from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
 from trulens.core import TruSession
 from trulens.connectors.snowflake import SnowflakeConnector
+
+# Create a session
+connection_parameters = {
+    'account': 'lcodjyy-anb61934',
+    'user': 'Hasith',
+    'password': 'Hasith@123',
+    'role': 'ACCOUNTADMIN',
+    'warehouse': 'COMPUTE_WH',
+    'database': 'MY_SAFEGRAPH',
+    'schema': 'PUBLIC'
+}
+
+snowpark_session = Session.builder.configs(connection_parameters).create()
 
 # Function to extract location and store name from user query
 def extract_location_and_store(query):
@@ -20,7 +34,6 @@ st.title("Foot Traffic Analysis for Retailers")
 st.write("Analyze customer foot traffic and find optimal store locations using Cortex Search and Mistral LLM.")
 
 # Initialize Snowflake and TruLens sessions
-snowpark_session = get_active_session()
 conn = SnowflakeConnector(snowpark_session=snowpark_session)
 tru_session = TruSession(connector=conn)
 
