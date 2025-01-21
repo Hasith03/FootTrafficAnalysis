@@ -2,17 +2,26 @@ import streamlit as st
 import json
 import os
 import re
+from dotenv import load_dotenv
 from snowflake.snowpark import Session
 from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
 from trulens.core import TruSession
 from trulens.connectors.snowflake import SnowflakeConnector
-from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
 
+# Debug environment variables
+print("Account:", os.getenv("SNOWFLAKE_ACCOUNT"))
+print("User:", os.getenv("SNOWFLAKE_USER"))
+print("Password:", os.getenv("SNOWFLAKE_PASSWORD"))
+print("Role:", os.getenv("SNOWFLAKE_ROLE"))
+print("Database:", os.getenv("SNOWFLAKE_DATABASE"))
+print("Warehouse:", os.getenv("SNOWFLAKE_WAREHOUSE"))
+print("Schema:", os.getenv("SNOWFLAKE_SCHEMA"))
 
-# load_dotenv()
-
+# Connection parameters
 CONNECTION_PARAMETERS = {
     "account": os.getenv("SNOWFLAKE_ACCOUNT"),
     "user": os.getenv("SNOWFLAKE_USER"),
@@ -22,19 +31,12 @@ CONNECTION_PARAMETERS = {
     "warehouse": os.getenv("SNOWFLAKE_WAREHOUSE"),
     "schema": os.getenv("SNOWFLAKE_SCHEMA"),
 }
-snowpark_session = Session.builder.configs(CONNECTION_PARAMETERS).create()
-# # Create a session
-# connection_parameters = {
-#     'account': 'lcodjyy-anb61934',
-#     'user': 'Hasith',
-#     'password': 'Hasith@123',
-#     'role': 'ACCOUNTADMIN',
-#     'warehouse': 'COMPUTE_WH',
-#     'database': 'MY_SAFEGRAPH',
-#     'schema': 'PUBLIC'
-# }
 
-# snowpark_session = Session.builder.configs(connection_parameters).create()
+# Create a session
+try:
+    snowpark_session = Session.builder.configs(CONNECTION_PARAMETERS).create()
+except Exception as e:
+    print(f"Error creating Snowflake session: {e}")
 
 # Function to extract location and store name from user query
 def extract_location_and_store(query):
