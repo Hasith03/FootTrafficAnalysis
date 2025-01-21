@@ -112,9 +112,9 @@ if snowpark_session:
 
             results = []
             for experiment in experiments:
-                # Assuming TruLens has a method to run and measure experiments
+                # Assuming TruLens has a method to log and measure feedback functions
                 # Replace 'run_experiment' with the correct method from TruLens documentation
-                result = tru_session.run_experiment(experiment["query"])
+                result = tru_session.log_feedback(experiment["query"])
                 results.append({
                     "name": experiment["name"],
                     "response_time": result.response_time,
