@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import os
 import re
-from dotenv import load_dotenv
+from .env import load_dotenv
 from snowflake.snowpark import Session
 from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
