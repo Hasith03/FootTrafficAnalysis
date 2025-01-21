@@ -7,18 +7,30 @@ from snowflake.snowpark.functions import col, parse_json
 from trulens.core import TruSession
 from trulens.connectors.snowflake import SnowflakeConnector
 
-# Create a session
-connection_parameters = {
-    'account': 'lcodjyy-anb61934',
-    'user': 'Hasith',
-    'password': 'Hasith@123',
-    'role': 'ACCOUNTADMIN',
-    'warehouse': 'COMPUTE_WH',
-    'database': 'MY_SAFEGRAPH',
-    'schema': 'PUBLIC'
-}
+load_dotenv()
 
-snowpark_session = Session.builder.configs(connection_parameters).create()
+CONNECTION_PARAMETERS = {
+    "account": os.getenv("SNOWFLAKE_ACCOUNT"),
+    "user": os.getenv("SNOWFLAKE_USER"),
+    "password": os.getenv("SNOWFLAKE_PASSWORD"),
+    "role": os.getenv("SNOWFLAKE_ROLE"),
+    "database": os.getenv("SNOWFLAKE_DATABASE"),
+    "warehouse": os.getenv("SNOWFLAKE_WAREHOUSE"),
+    "schema": os.getenv("SNOWFLAKE_SCHEMA"),
+}
+snowpark_session = Session.builder.configs(CONNECTION_PARAMETERS).create()
+# # Create a session
+# connection_parameters = {
+#     'account': 'lcodjyy-anb61934',
+#     'user': 'Hasith',
+#     'password': 'Hasith@123',
+#     'role': 'ACCOUNTADMIN',
+#     'warehouse': 'COMPUTE_WH',
+#     'database': 'MY_SAFEGRAPH',
+#     'schema': 'PUBLIC'
+# }
+
+# snowpark_session = Session.builder.configs(connection_parameters).create()
 
 # Function to extract location and store name from user query
 def extract_location_and_store(query):
