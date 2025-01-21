@@ -94,7 +94,7 @@ if snowpark_session:
                             insights_query = f"""
                                 SELECT SNOWFLAKE.CORTEX.COMPLETE(
                                     'mistral-large2',
-                                    'Based on the provided data, is it a good idea to open a {store_name} in {location}? {location_data}'
+                                    'Based on the provided data about {store_name} in {location}, is it a good idea to open a {store_name} store in {location}? {location_data}'
                                 ) AS INSIGHTS
                             """
                             insights_result = snowpark_session.sql(insights_query).collect()
@@ -112,7 +112,8 @@ if snowpark_session:
 
             results = []
             for experiment in experiments:
-                result = tru_session.run_experiment(experiment["query"])
+                # Assuming TruLens has a method to run and measure experiments
+                result = tru_session.run_and_measure(experiment["query"])
                 results.append({
                     "name": experiment["name"],
                     "response_time": result.response_time,
