@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from snowflake.snowpark import Session
 from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
-from trulens.core import Tru
+from trulens.core import TruSession, Feedback
 from trulens.connectors.snowflake import SnowflakeConnector
 
 # Load environment variables from .env file
@@ -46,12 +46,14 @@ if snowpark_session:
 
     # Initialize Snowflake and TruLens sessions
     conn = SnowflakeConnector(snowpark_session=snowpark_session)
-    tru = Tru(connector=conn)
+    tru_session = TruSession(connector=conn)
 
     # Define feedback functions
     def feedback_function(response):
         # Example feedback function to measure response time
         return len(response)
+
+    feedback = Feedback(feedback_function)
 
     # Chatbot input from the user
     st.header("Retail Location Analysis Chatbot")
@@ -107,7 +109,7 @@ if snowpark_session:
                             st.write(insights)
 
                             # Log feedback
-                            tru.log_feedback(feedback_function, insights)
+                            tru_session.log_feedback(feedback, insights)
 
                         except Exception as e:
                             st.error(f"Error generating insights: {e}")
@@ -116,4 +118,6 @@ if snowpark_session:
             st.error(f"Error retrieving data: {e}")
 
     # Close the session when the app stops
-    snowpark_session.close
+    snowpark_session.close()
+else:
+    st.error("Snowflake session could not be created. Please check your connection parameters.")
