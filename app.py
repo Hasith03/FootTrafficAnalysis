@@ -13,7 +13,7 @@ import atexit
 # Load environment variables
 load_dotenv()
 
-# Debug environment variables
+# Debug environment variables (use logging in production)
 print("Account:", os.getenv("SNOWFLAKE_ACCOUNT"))
 print("User:", os.getenv("SNOWFLAKE_USER"))
 print("Password:", os.getenv("SNOWFLAKE_PASSWORD"))
@@ -37,11 +37,13 @@ CONNECTION_PARAMETERS = {
 try:
     snowpark_session = Session.builder.configs(CONNECTION_PARAMETERS).create()
 except Exception as e:
-    print(f"Error creating Snowflake session: {e}")
+    st.error(f"Error creating Snowflake session: {e}")
 
 # Function to extract location and store name from user query
 def extract_location_and_store(query):
-    # Simple regex to extract location and store name (can be improved with NLP)
+    """
+    Extracts location and store name from the user query using regex.
+    """
     location_match = re.search(r'in\s+(\w+)', query, re.IGNORECASE)
     store_match = re.search(r'open\s+(\w+)', query, re.IGNORECASE)
     location = location_match.group(1) if location_match else None
