@@ -7,6 +7,9 @@ from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
 from trulens.core import TruSession
 from trulens.connectors.snowflake import SnowflakeConnector
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # load_dotenv()
 
