@@ -96,6 +96,32 @@ if user_query:
                         st.write(insights)
                     except Exception as e:
                         st.error(f"Error generating insights: {e}")
+
+        # TruLens Experimentation
+        st.subheader("TruLens Experimentation")
+        experiments = [
+            {"name": "Default Configuration", "query": query},
+            # Add more experiments with different configurations here
+        ]
+
+        results = []
+        for experiment in experiments:
+            result = tru_session.run_experiment(experiment["query"])
+            results.append({
+                "name": experiment["name"],
+                "response_time": result.response_time,
+                "relevance": result.relevance,
+                "accuracy": result.accuracy
+            })
+
+        # Display results in Streamlit
+        for result in results:
+            st.write(f"**Experiment: {result['name']}**")
+            st.write(f"Response Time: {result['response_time']}")
+            st.write(f"Relevance: {result['relevance']}")
+            st.write(f"Accuracy: {result['accuracy']}")
+            st.write("---")
+
     except Exception as e:
         st.error(f"Error retrieving data: {e}")
 
