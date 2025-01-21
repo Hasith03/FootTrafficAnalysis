@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from snowflake.snowpark import Session
 from snowflake.snowpark.context import get_active_session
 from snowflake.snowpark.functions import col, parse_json
-from trulens.core import TruSession
+from trulens.core import TruSession, Feedback
 from trulens.connectors.snowflake import SnowflakeConnector
 
 # Load environment variables from .env file
@@ -47,6 +47,13 @@ if snowpark_session:
     # Initialize Snowflake and TruLens sessions
     conn = SnowflakeConnector(snowpark_session=snowpark_session)
     tru_session = TruSession(connector=conn)
+
+    # Define feedback functions
+    def feedback_function(response):
+        # Example feedback function to measure response time
+        return len(response)
+
+    feedback = Feedback(feedback_function)
 
     # Chatbot input from the user
     st.header("Retail Location Analysis Chatbot")
@@ -100,35 +107,12 @@ if snowpark_session:
                             insights_result = snowpark_session.sql(insights_query).collect()
                             insights = insights_result[0]["INSIGHTS"]
                             st.write(insights)
+
+                            # Log feedback
+                            tru_session.log_feedback(feedback, insights)
+
                         except Exception as e:
                             st.error(f"Error generating insights: {e}")
-
-            # TruLens Experimentation
-            st.subheader("TruLens Experimentation")
-            experiments = [
-                {"name": "Default Configuration", "query": query},
-                # Add more experiments with different configurations here
-            ]
-
-            results = []
-            for experiment in experiments:
-                # Assuming TruLens has a method to log and measure feedback functions
-                # Replace 'run_experiment' with the correct method from TruLens documentation
-                result = tru_session.log_feedback(experiment["query"])
-                results.append({
-                    "name": experiment["name"],
-                    "response_time": result.response_time,
-                    "relevance": result.relevance,
-                    "accuracy": result.accuracy
-                })
-
-            # Display results in Streamlit
-            for result in results:
-                st.write(f"**Experiment: {result['name']}**")
-                st.write(f"Response Time: {result['response_time']}")
-                st.write(f"Relevance: {result['relevance']}")
-                st.write(f"Accuracy: {result['accuracy']}")
-                st.write("---")
 
         except Exception as e:
             st.error(f"Error retrieving data: {e}")
